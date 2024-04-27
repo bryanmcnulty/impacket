@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 # Impacket - Collection of Python classes for working with network protocols.
 #
 # Copyright (C) 2024 Fortra. All rights reserved.
@@ -96,7 +96,7 @@ WELL_KNOWN_SIDS = {
     'S-1-5-64-14': 'SChannel Authentication',
     'S-1-5-64-21': 'Digest Authority',
     'S-1-5-80': 'NT Service',
-    'S-1-5-83-0': 'NT VIRTUAL MACHINE\Virtual Machines',
+    'S-1-5-83-0': 'NT VIRTUAL MACHINE\\Virtual Machines',
     'S-1-16-0': 'Untrusted Mandatory Level',
     'S-1-16-4096': 'Low Mandatory Level',
     'S-1-16-8192': 'Medium Mandatory Level',
@@ -105,24 +105,24 @@ WELL_KNOWN_SIDS = {
     'S-1-16-16384': 'System Mandatory Level',
     'S-1-16-20480': 'Protected Process Mandatory Level',
     'S-1-16-28672': 'Secure Process Mandatory Level',
-    'S-1-5-32-554': 'BUILTIN\Pre-Windows 2000 Compatible Access',
-    'S-1-5-32-555': 'BUILTIN\Remote Desktop Users',
-    'S-1-5-32-557': 'BUILTIN\Incoming Forest Trust Builders',
+    'S-1-5-32-554': 'BUILTIN\\Pre-Windows 2000 Compatible Access',
+    'S-1-5-32-555': 'BUILTIN\\Remote Desktop Users',
+    'S-1-5-32-557': 'BUILTIN\\Incoming Forest Trust Builders',
     'S-1-5-32-556': 'BUILTIN\\Network Configuration Operators',
-    'S-1-5-32-558': 'BUILTIN\Performance Monitor Users',
-    'S-1-5-32-559': 'BUILTIN\Performance Log Users',
-    'S-1-5-32-560': 'BUILTIN\Windows Authorization Access Group',
-    'S-1-5-32-561': 'BUILTIN\Terminal Server License Servers',
-    'S-1-5-32-562': 'BUILTIN\Distributed COM Users',
-    'S-1-5-32-569': 'BUILTIN\Cryptographic Operators',
-    'S-1-5-32-573': 'BUILTIN\Event Log Readers',
-    'S-1-5-32-574': 'BUILTIN\Certificate Service DCOM Access',
-    'S-1-5-32-575': 'BUILTIN\RDS Remote Access Servers',
-    'S-1-5-32-576': 'BUILTIN\RDS Endpoint Servers',
-    'S-1-5-32-577': 'BUILTIN\RDS Management Servers',
-    'S-1-5-32-578': 'BUILTIN\Hyper-V Administrators',
-    'S-1-5-32-579': 'BUILTIN\Access Control Assistance Operators',
-    'S-1-5-32-580': 'BUILTIN\Remote Management Users',
+    'S-1-5-32-558': 'BUILTIN\\Performance Monitor Users',
+    'S-1-5-32-559': 'BUILTIN\\Performance Log Users',
+    'S-1-5-32-560': 'BUILTIN\\Windows Authorization Access Group',
+    'S-1-5-32-561': 'BUILTIN\\Terminal Server License Servers',
+    'S-1-5-32-562': 'BUILTIN\\Distributed COM Users',
+    'S-1-5-32-569': 'BUILTIN\\Cryptographic Operators',
+    'S-1-5-32-573': 'BUILTIN\\Event Log Readers',
+    'S-1-5-32-574': 'BUILTIN\\Certificate Service DCOM Access',
+    'S-1-5-32-575': 'BUILTIN\\RDS Remote Access Servers',
+    'S-1-5-32-576': 'BUILTIN\\RDS Endpoint Servers',
+    'S-1-5-32-577': 'BUILTIN\\RDS Management Servers',
+    'S-1-5-32-578': 'BUILTIN\\Hyper-V Administrators',
+    'S-1-5-32-579': 'BUILTIN\\Access Control Assistance Operators',
+    'S-1-5-32-580': 'BUILTIN\\Remote Management Users',
 }
 
 
@@ -354,7 +354,7 @@ class DACLedit(object):
         else:
             logging.info("Nothing to remove...")
 
-    
+
     # Permits to backup a DACL before a modification
     # This function is called before any writing action (write, remove or restore)
     def backup(self):
@@ -371,7 +371,7 @@ class DACLedit(object):
             json.dump(backup, outfile)
         logging.info('DACL backed up to %s', self.filename)
 
-    
+
     # Permits to restore a saved DACL
     def restore(self):
         # Opens and load the file where the DACL has been saved
@@ -394,7 +394,7 @@ class DACLedit(object):
         self.backup()
         logging.info('Restoring DACL')
         self.modify_secDesc_for_dn(self.target_DN, new_security_descriptor)
-    
+
     # Attempts to retrieve the DACL in the Security Descriptor of the specified target
     def search_target_principal_security_descriptor(self):
         _lookedup_principal = ""
@@ -416,7 +416,7 @@ class DACLedit(object):
             logging.error('Target principal not found in LDAP (%s)' % _lookedup_principal)
             exit(0)
 
-    
+
     # Attempts to retieve the SID and Distinguisehd Name from the sAMAccountName
     # Not used for the moment
     #   - samname : a sAMAccountName
@@ -430,7 +430,7 @@ class DACLedit(object):
             logging.error('User not found in LDAP: %s' % samname)
             return False
 
-    
+
     # Attempts to resolve a SID and return the corresponding samaccountname
     #   - sid : the SID to resolve
     def resolveSID(self, sid):
@@ -448,7 +448,7 @@ class DACLedit(object):
                 logging.debug('SID not found in LDAP: %s' % sid)
                 return ""
 
-    
+
     # Parses a full DACL
     #   - dacl : the DACL to parse, submitted in a Security Desciptor format
     def parseDACL(self, dacl):
@@ -461,7 +461,7 @@ class DACLedit(object):
             i += 1
         return parsed_dacl
 
-    
+
     # Parses an access mask to extract the different values from a simple permission
     # https://stackoverflow.com/questions/28029872/retrieving-security-descriptor-and-getting-number-for-filesystemrights
     #   - fsr : the access mask to parse
@@ -476,7 +476,7 @@ class DACLedit(object):
                 _perms.append(PERM.name)
         return _perms
 
-    
+
     # Parses a specified ACE and extract the different values (Flags, Access Mask, Trustee, ObjectType, InheritedObjectType)
     #   - ace : the ACE to parse
     def parseACE(self, ace):
@@ -663,7 +663,7 @@ class DACLedit(object):
             acedata = ldaptypes.ACCESS_ALLOWED_OBJECT_ACE()
         else:
             nace['AceType'] = ldaptypes.ACCESS_DENIED_OBJECT_ACE.ACE_TYPE
-            acedata = ldaptypes.ACCESS_DENIED_OBJECT_ACE()           
+            acedata = ldaptypes.ACCESS_DENIED_OBJECT_ACE()
         if self.inheritance:
             nace['AceFlags'] = ldaptypes.ACE.OBJECT_INHERIT_ACE + ldaptypes.ACE.CONTAINER_INHERIT_ACE
         else:
