@@ -73,3 +73,5 @@ target/
 
 # Test cases configuration
 tests/dcetests.cfg
+
+/.local
