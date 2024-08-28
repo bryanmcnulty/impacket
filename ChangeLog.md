@@ -13,6 +13,7 @@ https://github.com/fortra/impacket/commits/master
     * Assorted fixes when processing Unicode data (@alexisbalbachan)
     * Added `[MS-GKDI]` Group Key Distribution Protocol implementation (@zblurx)
     * Fixed incorrect padding in SMBSessionSetupAndX_Extended_ResponseData (@rtpt-erikgeiser)
+    * Upgraded dependency pyreadline -> pyreadline3 (@anadrianmanrique)
 
 2. Examples improvements
     * [secretsdump.py](examples/secretsdump.py):
@@ -28,11 +29,13 @@ https://github.com/fortra/impacket/commits/master
     * [ntlmrelayx.py](examples/ntlmrelayx.py):
         * Added the creation of a new machine account through SMB (@BlWasp)
         * NTLMRelayX Multirelay fixes for target handling (@alexisbalbachan)
+        * Logging multirelay status when triggering the example (@gabrielg5)
         * Writes certificates to file rather than outputting b64 to console (@RazzburyPi)
         * Improved ability to continue relaying to ADCS web enrollment endpoint in order to request multiple certificates for different users (@RazzburyPi)
         * Fixed compatibility issue with other SMB clients connecting to the SOCKS proxy created by ntlmrelayx (@jfjallid)
         * Allow configuration of the SOCKS5 address and port (@rtpt-erikgeiser)
         * Fixed implementation of MSSQLShell (@gabrielg5)
+        * Logging notification of received connections in all relay servers (@gabrielg5)
     * [getST.py](examples/getST.py):
         * Added -self, -altservice and -u2u  for S4U2self abuse, S4U2self+u2u, and service substitution (@ShutdownRepo)
     * [reg.py](examples/reg.py):
@@ -51,6 +54,10 @@ https://github.com/fortra/impacket/commits/master
      	* Added `-target-ip` parameter to allow Kerberos authentication without much change in the DNS configuration of the local machine (@Palkovsky)
     * [mssqlshell.py](examples/mssqlshell.py):
     	* Switching back to original DB after running `enum_impersonate` command (@exploide)
+     * [registry-read.py](examples/registry-read.py):
+     	* Fixed scenario where value name contains backlash (@DidierA)
+     * [net.py](examples/net.py):
+     	* Fixed User "Account Active" property value (@marcobarlottini)
 
 3. New examples
     * [describeTicket.py](examples/describeTicket.py): Ticket describer and decrypter. (@ShutdownRepo)
@@ -60,7 +67,7 @@ https://github.com/fortra/impacket/commits/master
 
 As always, thanks a lot to all these contributors that make this library better every day (up to now):
 
-@tomspencer @anadrianmanrique @ShutdownRepo @dadevel @gjhami @NtAlexio2 @F-Masood @BlWasp @gabrielg5 @XiaoliChan @omry99 @Wlayzz @themaks @alexisbalbachan @RazzburyPi @jeffmcjunkin @p0dalirius @dc3l1ne @jfjallid @Palkovsky @rtpt-erikgeiser @trietend @zblurx @dru1d-foofus @PfiatDe
+@tomspencer @anadrianmanrique @ShutdownRepo @dadevel @gjhami @NtAlexio2 @F-Masood @BlWasp @gabrielg5 @XiaoliChan @omry99 @Wlayzz @themaks @alexisbalbachan @RazzburyPi @jeffmcjunkin @p0dalirius @dc3l1ne @jfjallid @Palkovsky @rtpt-erikgeiser @trietend @zblurx @dru1d-foofus @PfiatDe @DidierA @marcobarlottini
 
 	  
 ## Impacket v0.11.0 (Aug 2023):
