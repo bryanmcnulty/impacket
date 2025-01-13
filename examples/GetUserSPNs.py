@@ -88,7 +88,7 @@ class GetUserSPNs:
         self.__requestTGS = cmdLineOptions.request
         # [!] in this script the value of -dc-ip option is self.__kdcIP and the value of -dc-host option is self.__kdcHost
         self.__kdcIP = cmdLineOptions.dc_ip
-        self.__kdcHost = cmdLineOptions.dc_host
+        self.__kdcHost = self.__kdcIP or cmdLineOptions.dc_host
         self.__saveTGS = cmdLineOptions.save
         self.__requestUser = cmdLineOptions.request_user
         self.__stealth = cmdLineOptions.stealth
